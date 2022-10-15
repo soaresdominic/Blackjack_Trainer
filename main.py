@@ -1,4 +1,6 @@
 import random
+from datetime import datetime
+from tracemalloc import start
 
 """
 Basic strategy trainer for blackjack with multiple decks. All permutations of cards are simulated, with the correct move assigned to each permutation
@@ -37,18 +39,27 @@ while not all_correct:
     answer = cards[3]
 
     while True:
+        start_time = datetime.now()
         print("DEALER: ", dealer_face_up)
         print("Dealt: ", dealt_cards)
         guess = input()
         if guess in ['s', 'h', 'd', 'p']:
             break
-    if guess == answer:
+    end_time = datetime.now()
+    time_diff = end_time - start_time
+    elapsed_seconds = time_diff.total_seconds()
+
+    if elapsed_seconds >= 5 and guess == answer:
+        print("TOO SLOW!", answer, "------")
+        if cards not in guessed_incorrectly:
+            guessed_incorrectly.append(cards)
+    elif guess == answer:
         correct.append(card_combos_index)
         incorrect.remove(card_combos_index)
         print("CORRECT")
     else:
         # incorrect already holds all the original combos, no need to append
-        print("INCORRECT: ", answer)
+        print("INCORRECT: ", answer, "------")
         if cards not in guessed_incorrectly:
             guessed_incorrectly.append(cards)
 
